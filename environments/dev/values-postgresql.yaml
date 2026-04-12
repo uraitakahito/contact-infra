@@ -1,0 +1,20 @@
+fullnameOverride: postgresql
+
+auth:
+  postgresPassword: "dev-postgres-password"
+  username: "contact_api"
+  password: "dev-contact-api-password"
+  database: "contact_api"
+
+primary:
+  initdb:
+    scripts:
+      create-openfga-db.sh: |
+        #!/bin/bash
+        set -e
+        PGPASSWORD="$POSTGRES_POSTGRES_PASSWORD" psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+          CREATE USER openfga WITH PASSWORD 'dev-openfga-password';
+          CREATE DATABASE openfga OWNER openfga;
+        EOSQL
+  persistence:
+    size: 1Gi

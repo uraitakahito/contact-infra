@@ -1,0 +1,23 @@
+fullnameOverride: postgresql
+
+image:
+  tag: "17"
+
+auth:
+  existingSecret: postgresql-credentials
+  secretKeys:
+    adminPasswordKey: postgres-password
+    userPasswordKey: password
+
+primary:
+  initdb:
+    scriptsSecret: postgresql-init-scripts
+  persistence:
+    size: 50Gi
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: "2"
+      memory: 2Gi
