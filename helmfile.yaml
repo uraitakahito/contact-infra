@@ -1,0 +1,37 @@
+environments:
+  dev:
+    values:
+      - environments/dev/values.yaml
+  prod:
+    values:
+      - environments/prod/values.yaml
+
+repositories:
+  - name: openfga
+    url: https://openfga.github.io/helm-charts
+
+---
+
+releases:
+  - name: postgresql
+    namespace: contact
+    chart: oci://registry-1.docker.io/bitnamicharts/postgresql
+    version: "18.5.16"
+    values:
+      - environments/{{ .Environment.Name }}/values-postgresql.yaml
+
+  - name: openfga
+    namespace: contact
+    chart: openfga/openfga
+    needs:
+      - contact/postgresql
+    values:
+      - environments/{{ .Environment.Name }}/values-openfga.yaml
+
+  - name: contact-api
+    namespace: contact
+    chart: ./charts/contact-api
+    needs:
+      - contact/openfga
+    values:
+      - environments/{{ .Environment.Name }}/values-contact-api.yaml

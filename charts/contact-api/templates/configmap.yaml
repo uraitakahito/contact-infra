@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "contact-api.fullname" . }}
+  labels:
+    {{- include "contact-api.labels" . | nindent 4 }}
+data:
+  CONTACT_API_DB_HOST: {{ .Values.postgresql.host | quote }}
+  CONTACT_API_DB_PORT: {{ .Values.postgresql.port | quote }}
+  CONTACT_API_DB_NAME: {{ .Values.postgresql.database | quote }}
+  CONTACT_API_DB_USER: {{ .Values.postgresql.username | quote }}
+  OPENFGA_API_URL: {{ .Values.openfga.apiUrl | quote }}
+  OPENFGA_CONFIG_FILE: {{ .Values.openfga.configFile | quote }}

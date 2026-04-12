@@ -1,0 +1,17 @@
+replicaCount: 1
+
+datastore:
+  engine: postgres
+  uri: "postgres://openfga:dev-openfga-password@postgresql:5432/openfga?sslmode=disable"
+  applyMigrations: true
+
+playground:
+  enabled: true
+  port: 3000
+
+http:
+  enabled: true
+  addr: 0.0.0.0:8080
+
+grpc:
+  addr: 0.0.0.0:8081

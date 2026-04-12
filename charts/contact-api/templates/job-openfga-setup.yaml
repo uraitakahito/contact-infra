@@ -1,0 +1,31 @@
+{{- if .Values.openfgaSetup.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "contact-api.fullname" . }}-openfga-setup
+  labels:
+    {{- include "contact-api.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        {{- include "contact-api.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: openfga-setup
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: openfga-setup
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "dist/src/bin/setup-openfga.js"
+            - "--openfga-url"
+            - "{{ .Values.openfga.apiUrl }}"
+            - "--output-file"
+            - "/tmp/openfga-config.json"
+{{- end }}
