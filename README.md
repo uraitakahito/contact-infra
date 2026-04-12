@@ -32,9 +32,6 @@ contact-api (GROUP 3)
 - kubectl
 
 ```bash
-# Helmfile のインストール
-brew install helmfile
-
 # Helmfile の依存プラグインを初期化
 helmfile init
 ```
