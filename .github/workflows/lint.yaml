@@ -14,3 +14,12 @@ jobs:
       - uses: helmfile/helmfile-action@8676eae58f17e6232c519147a0729f5f3d67a8a0 # v2.4.2
         with:
           helmfile-args: lint -e dev
+
+  helm-unittest:
+    runs-on: ubuntu-latest
+    container:
+      image: helmunittest/helm-unittest:3.17.3-0.8.2
+      options: --user root
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - run: helm unittest charts/contact-api

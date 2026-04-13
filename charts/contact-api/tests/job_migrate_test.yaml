@@ -1,0 +1,97 @@
+suite: Job - migrate
+templates:
+  - templates/job-migrate.yaml
+release:
+  name: contact-api
+  namespace: contact
+tests:
+  - it: should render when migration.enabled is true
+    asserts:
+      - isKind:
+          of: Job
+      - isAPIVersion:
+          of: batch/v1
+      - hasDocuments:
+          count: 1
+
+  - it: should not render when migration.enabled is false
+    set:
+      migration:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should have -migrate suffix in name
+    asserts:
+      - equal:
+          path: metadata.name
+          value: contact-api-migrate
+
+  - it: should have post-install and post-upgrade hook
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: "post-install,post-upgrade"
+
+  - it: should have hook-weight 0
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: "0"
+
+  - it: should have hook-delete-policy before-hook-creation
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/hook-delete-policy"]
+          value: "before-hook-creation"
+
+  - it: should have backoffLimit 3
+    asserts:
+      - equal:
+          path: spec.backoffLimit
+          value: 3
+
+  - it: should have restartPolicy Never
+    asserts:
+      - equal:
+          path: spec.template.spec.restartPolicy
+          value: Never
+
+  - it: should run migrate up command
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - "dist/src/bin/migrate.js"
+            - "up"
+
+  - it: should use image from values
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "ghcr.io/uraitakahito/contact-api:latest"
+
+  - it: should have envFrom with configMapRef and secretRef
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
+          value: contact-api
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[1].secretRef.name
+          value: contact-api
+
+  - it: should use existingSecret for secretRef when set
+    set:
+      postgresql:
+        existingSecret: "ext-secret"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[1].secretRef.name
+          value: ext-secret
+
+  - it: should have component label migrate
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/component"]
+          value: migrate

@@ -61,15 +61,23 @@ kubectl delete pvc --all -n contact
 │   └── contact-api/
 │       ├── Chart.yaml
 │       ├── values.yaml           # デフォルト値
-│       └── templates/
-│           ├── _helpers.tpl
-│           ├── configmap.yaml
-│           ├── secret.yaml
-│           ├── deployment.yaml
-│           ├── service.yaml
-│           ├── job-migrate.yaml       # DB マイグレーション (hook-weight: 0)
-│           ├── job-seed.yaml          # DB シード (hook-weight: 1)
-│           └── job-openfga-setup.yaml # OpenFGA ストア/モデル作成 (hook-weight: 1)
+│       ├── templates/
+│       │   ├── _helpers.tpl
+│       │   ├── configmap.yaml
+│       │   ├── secret.yaml
+│       │   ├── deployment.yaml
+│       │   ├── service.yaml
+│       │   ├── job-migrate.yaml       # DB マイグレーション (hook-weight: 0)
+│       │   ├── job-seed.yaml          # DB シード (hook-weight: 1)
+│       │   └── job-openfga-setup.yaml # OpenFGA ストア/モデル作成 (hook-weight: 1)
+│       └── tests/                # helm-unittest テストスイート
+│           ├── configmap_test.yaml
+│           ├── deployment_test.yaml
+│           ├── job_migrate_test.yaml
+│           ├── job_openfga_setup_test.yaml
+│           ├── job_seed_test.yaml
+│           ├── secret_test.yaml
+│           └── service_test.yaml
 └── environments/
     ├── dev/
     │   ├── values.yaml
@@ -139,6 +147,25 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 | `migration.enabled` | `true` | DB マイグレーション Job の有効化 |
 | `seed.enabled` | `true` | DB シード Job の有効化 |
 | `resources` | `{}` | CPU/memory リソース制限 |
+
+## Unit Tests
+
+[helm-unittest](https://github.com/helm-unittest/helm-unittest) でカスタムチャートのテンプレートを検証する。
+
+```bash
+# 全テスト実行
+helm unittest charts/contact-api
+```
+
+テストファイルは `charts/contact-api/tests/` に配置。各テンプレートに対応するテストスイートで以下を検証:
+
+- リソースの kind / apiVersion
+- 条件分岐 (`existingSecret`, `migration.enabled`, `seed.enabled`, `openfgaSetup.enabled`)
+- values からの値伝搬
+- Helm hook annotations と hook-weight の順序
+- プローブ、ボリューム、initContainer の構造
+
+CI では `helmfile-lint` とは別の `helm-unittest` ジョブとして自動実行される。
 
 ## Coding Conventions
 
