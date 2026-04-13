@@ -1,0 +1,16 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, develop]
+
+jobs:
+  helmfile-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: helmfile/helmfile-action@8676eae58f17e6232c519147a0729f5f3d67a8a0 # v2.4.2
+        with:
+          helmfile-args: lint -e dev
