@@ -1,10 +1,10 @@
 fullnameOverride: "postgresql"
 
 auth:
-  postgresPassword: "dev-postgres-password"
   username: "contact_api_dev"
   password: "dev-contact-api-password"
   database: "contact_api_dev"
+  postgresPassword: "dev-postgres-password"
 
 primary:
   initdb:
