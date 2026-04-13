@@ -1,10 +1,10 @@
-fullnameOverride: postgresql
+fullnameOverride: "postgresql"
 
 auth:
   postgresPassword: "dev-postgres-password"
-  username: "contact_api"
+  username: "contact_api_dev"
   password: "dev-contact-api-password"
-  database: "contact_api"
+  database: "contact_api_dev"
 
 primary:
   initdb:
@@ -17,4 +17,4 @@ primary:
           CREATE DATABASE openfga OWNER openfga;
         EOSQL
   persistence:
-    size: 1Gi
+    size: "1Gi"

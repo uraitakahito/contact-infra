@@ -21,18 +21,18 @@ kubectl create namespace contact
 
 ### postgresql-credentials
 
-PostgreSQL の管理者パスワードと contact_api ユーザーのパスワード。
+PostgreSQL の管理者パスワードと contact_api_prod ユーザーのパスワード。
 
 | Key | Description |
 |-----|-------------|
 | `postgres-password` | postgres ユーザー (管理者) のパスワード |
-| `password` | contact_api ユーザーのパスワード |
+| `password` | contact_api_prod ユーザーのパスワード |
 
 ```bash
 kubectl create secret generic postgresql-credentials \
   -n contact \
   --from-literal=postgres-password='<postgres admin password>' \
-  --from-literal=password='<contact_api user password>'
+  --from-literal=password='<contact_api_prod user password>'
 ```
 
 ### postgresql-init-scripts
@@ -75,15 +75,15 @@ contact-api が PostgreSQL に接続するためのパスワード。
 
 | Key | Description |
 |-----|-------------|
-| `CONTACT_API_DB_PASSWORD` | contact_api ユーザーのパスワード |
+| `CONTACT_API_DB_PASSWORD` | contact_api_prod ユーザーのパスワード |
 
 ```bash
 kubectl create secret generic contact-api-db-credentials \
   -n contact \
-  --from-literal=CONTACT_API_DB_PASSWORD='<contact_api user password>'
+  --from-literal=CONTACT_API_DB_PASSWORD='<contact_api_prod user password>'
 ```
 
-> `<contact_api user password>` は `postgresql-credentials` の `password` と一致させること。
+> `<contact_api_prod user password>` は `postgresql-credentials` の `password` と一致させること。
 
 ## 3. デプロイ
 

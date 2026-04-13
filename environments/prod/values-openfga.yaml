@@ -1,8 +1,8 @@
 replicaCount: 3
 
 datastore:
-  engine: postgres
-  uriSecret: openfga-datastore-credentials
+  engine: "postgres"
+  uriSecret: "openfga-datastore-credentials"
   applyMigrations: true
 
 playground:
@@ -10,8 +10,8 @@ playground:
 
 resources:
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: "250m"
+    memory: "256Mi"
   limits:
     cpu: "1"
-    memory: 512Mi
+    memory: "512Mi"

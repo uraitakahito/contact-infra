@@ -1,27 +1,27 @@
 replicaCount: 3
 
 image:
-  repository: contact-api
+  repository: "contact-api"
   tag: "latest"
-  pullPolicy: Never
+  pullPolicy: "Never"
 
 postgresql:
-  host: postgresql
+  host: "postgresql"
   port: 5432
-  database: contact_api
-  username: contact_api
-  existingSecret: contact-api-db-credentials
+  database: "contact_api_prod"
+  username: "contact_api_prod"
+  existingSecret: "contact-api-db-credentials"
 
 openfga:
-  apiUrl: http://openfga:8080
+  apiUrl: "http://openfga:8080"
 
 seed:
   enabled: false
 
 resources:
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: "250m"
+    memory: "256Mi"
   limits:
     cpu: "1"
-    memory: 512Mi
+    memory: "512Mi"

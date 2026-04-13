@@ -128,8 +128,8 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 | `service.port` | `80` | Service ポート |
 | `postgresql.host` | `postgresql` | PostgreSQL ホスト名 |
 | `postgresql.port` | `5432` | PostgreSQL ポート |
-| `postgresql.database` | `contact_api` | データベース名 |
-| `postgresql.username` | `contact_api` | データベースユーザー |
+| `postgresql.database` | `contact_api_dev` | データベース名 |
+| `postgresql.username` | `contact_api_dev` | データベースユーザー |
 | `postgresql.password` | `""` | データベースパスワード |
 | `postgresql.existingSecret` | `""` | 既存 Secret 名 (設定時は password より優先) |
 | `openfga.apiUrl` | `http://openfga:8080` | OpenFGA API URL |
@@ -138,6 +138,28 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 | `migration.enabled` | `true` | DB マイグレーション Job の有効化 |
 | `seed.enabled` | `true` | DB シード Job の有効化 |
 | `resources` | `{}` | CPU/memory リソース制限 |
+
+## Coding Conventions
+
+values ファイル内の文字列値はすべてダブルクォートで囲む。
+[Helm 公式ベストプラクティス](https://helm.sh/docs/chart_best_practices/values/)に従い、
+YAML の暗黙的な型変換による事故を防止する。
+
+```yaml
+# Good
+image:
+  repository: "contact-api"
+  tag: "latest"
+  pullPolicy: "Never"
+
+# Bad
+image:
+  repository: contact-api
+  tag: latest
+  pullPolicy: Never
+```
+
+整数・ブーリアン・空オブジェクト/配列はクォートしない。
 
 ## Documentation
 
