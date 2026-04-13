@@ -17,6 +17,8 @@ kubectl create namespace contact
 
 デプロイ前に 4 つの Secret を `contact` namespace に作成する。
 
+initdb スクリプト (OpenFGA 用 DB 作成) は Helm values で管理しているため、Secret としての作成は不要。
+
 以下の例ではパスワードをプレースホルダーにしている。実際の値に置き換えること。
 
 ### postgresql-credentials
@@ -26,32 +28,27 @@ PostgreSQL の管理者パスワードと contact_api_prod ユーザーのパス
 | Key | Description |
 |-----|-------------|
 | `postgres-password` | postgres ユーザー (管理者) のパスワード |
-| `password` | contact_api_prod ユーザーのパスワード |
+| `contact-api-password` | contact_api_prod ユーザーのパスワード |
 
 ```bash
 kubectl create secret generic postgresql-credentials \
   -n contact \
   --from-literal=postgres-password='<postgres admin password>' \
-  --from-literal=password='<contact_api_prod user password>'
+  --from-literal=contact-api-password='<contact_api_prod user password>'
 ```
 
-### postgresql-init-scripts
+### openfga-db-credentials
 
-PostgreSQL 起動時に実行される initdb スクリプト。OpenFGA 用のユーザーとデータベースを作成する。
+OpenFGA 用 PostgreSQL ユーザーのパスワード。initdb スクリプトが環境変数として参照する。
 
 | Key | Description |
 |-----|-------------|
-| `create-openfga-db.sh` | OpenFGA 用 DB 作成スクリプト |
+| `OPENFGA_DB_PASSWORD` | openfga ユーザーのパスワード |
 
 ```bash
-kubectl create secret generic postgresql-init-scripts \
+kubectl create secret generic openfga-db-credentials \
   -n contact \
-  --from-literal=create-openfga-db.sh='#!/bin/bash
-set -e
-PGPASSWORD="$(cat /opt/bitnami/postgresql/secrets/postgres-password)" psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
-  CREATE USER openfga WITH PASSWORD '"'"'<openfga user password>'"'"';
-  CREATE DATABASE openfga OWNER openfga;
-EOSQL'
+  --from-literal=OPENFGA_DB_PASSWORD='<openfga user password>'
 ```
 
 ### openfga-datastore-credentials
@@ -68,7 +65,7 @@ kubectl create secret generic openfga-datastore-credentials \
   --from-literal=uri='postgres://openfga:<openfga user password>@postgresql:5432/openfga?sslmode=disable'
 ```
 
-> `<openfga user password>` は `postgresql-init-scripts` で指定したパスワードと一致させること。
+> `<openfga user password>` は `openfga-db-credentials` で指定したパスワードと一致させること。
 
 ### contact-api-db-credentials
 
@@ -84,7 +81,7 @@ kubectl create secret generic contact-api-db-credentials \
   --from-literal=CONTACT_API_DB_PASSWORD='<contact_api_prod user password>'
 ```
 
-> `<contact_api_prod user password>` は `postgresql-credentials` の `password` と一致させること。
+> `<contact_api_prod user password>` は `postgresql-credentials` の `contact-api-password` と一致させること。
 
 ## 3. デプロイ
 

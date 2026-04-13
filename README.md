@@ -39,16 +39,11 @@ kubectl create namespace contact
 kubectl create secret generic postgresql-credentials \
   -n contact \
   --from-literal=postgres-password='dev-postgres-password' \
-  --from-literal=password='dev-contact-api-password'
+  --from-literal=contact-api-password='dev-contact-api-password'
 
-kubectl create secret generic postgresql-init-scripts \
+kubectl create secret generic openfga-db-credentials \
   -n contact \
-  --from-literal=create-openfga-db.sh='#!/bin/bash
-set -e
-PGPASSWORD="$(cat /opt/bitnami/postgresql/secrets/postgres-password)" psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
-  CREATE USER openfga WITH PASSWORD '"'"'dev-openfga-password'"'"';
-  CREATE DATABASE openfga OWNER openfga;
-EOSQL'
+  --from-literal=OPENFGA_DB_PASSWORD='dev-openfga-password'
 
 kubectl create secret generic openfga-datastore-credentials \
   -n contact \

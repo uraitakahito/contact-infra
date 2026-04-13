@@ -7,11 +7,20 @@ auth:
   existingSecret: "postgresql-credentials"
   secretKeys:
     adminPasswordKey: "postgres-password"
-    userPasswordKey: "password"
+    userPasswordKey: "contact-api-password"
 
 primary:
+  extraEnvVarsSecret: "openfga-db-credentials"
   initdb:
-    scriptsSecret: "postgresql-init-scripts"
+    scripts:
+      create-openfga-db.sh: |
+        #!/bin/bash
+        set -e
+        PGPASSWORD="$(cat /opt/bitnami/postgresql/secrets/postgres-password)" \
+          psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+            CREATE USER openfga WITH PASSWORD '${OPENFGA_DB_PASSWORD}';
+            CREATE DATABASE openfga OWNER openfga;
+        EOSQL
   persistence:
     size: "50Gi"
   resources:
