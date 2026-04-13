@@ -27,7 +27,9 @@ helm plugin install --verify=false https://github.com/databus23/helm-diff
 helm plugin install --verify=false https://github.com/helm-unittest/helm-unittest
 ```
 
-## Quick Start
+## デプロイ手順
+
+### dev
 
 ```bash
 # 依存関係の DAG を確認
@@ -51,18 +53,6 @@ kubectl delete pvc --all -n contact
 > uninstall 時に ServiceAccount 削除済みの状態で再実行されハングする問題を回避するために必要。
 > また `helm uninstall` は PVC を削除しないため、クリーンな再デプロイには
 > `kubectl delete pvc` で永続データを明示的に削除する必要がある。
-
-## Environments
-
-### dev
-
-- パスワードを values ファイルにインラインで記載
-- レプリカ数: 1
-- seed Job: 無効（デフォルト）
-
-```bash
-helmfile -e dev sync
-```
 
 ### prod
 
