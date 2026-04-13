@@ -21,7 +21,7 @@ contact-api (GROUP 3)
 | Release | Chart | Description |
 |---------|-------|-------------|
 | postgresql | [bitnami/postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) (OCI) | PostgreSQL 17。contact-api 用と OpenFGA 用の 2 DB を initdb スクリプトで作成 |
-| openfga | [openfga/openfga](https://github.com/openfga/helm-charts) | 認可サービス。PostgreSQL をデータストアに使用し、マイグレーションを自動実行 |
+| openfga | [openfga/openfga](https://github.com/openfga/helm-charts) (OCI) | 認可サービス。PostgreSQL をデータストアに使用し、マイグレーションを自動実行 |
 | contact-api | `./charts/contact-api` (カスタムチャート) | Fastify API サーバー。Helm hook Job で DB マイグレーション・シード・OpenFGA セットアップを実行 |
 
 ## Prerequisites
