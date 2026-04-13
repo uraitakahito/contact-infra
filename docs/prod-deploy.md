@@ -26,13 +26,13 @@ PostgreSQL の管理者パスワードと contact_api_prod ユーザーのパス
 | Key | Description |
 |-----|-------------|
 | `postgres-password` | postgres ユーザー (管理者) のパスワード |
-| `password` | contact_api_prod ユーザーのパスワード |
+| `contact-api-password` | contact_api_prod ユーザーのパスワード |
 
 ```bash
 kubectl create secret generic postgresql-credentials \
   -n contact \
   --from-literal=postgres-password='<postgres admin password>' \
-  --from-literal=password='<contact_api_prod user password>'
+  --from-literal=contact-api-password='<contact_api_prod user password>'
 ```
 
 ### postgresql-init-scripts

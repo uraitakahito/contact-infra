@@ -39,7 +39,7 @@ kubectl create namespace contact
 kubectl create secret generic postgresql-credentials \
   -n contact \
   --from-literal=postgres-password='dev-postgres-password' \
-  --from-literal=password='dev-contact-api-password'
+  --from-literal=contact-api-password='dev-contact-api-password'
 
 kubectl create secret generic postgresql-init-scripts \
   -n contact \

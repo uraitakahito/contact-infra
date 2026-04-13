@@ -7,7 +7,7 @@ auth:
   existingSecret: "postgresql-credentials"
   secretKeys:
     adminPasswordKey: "postgres-password"
-    userPasswordKey: "password"
+    userPasswordKey: "contact-api-password"
 
 primary:
   initdb:
