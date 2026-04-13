@@ -8,19 +8,9 @@
 
 3 つの Helm リリースを依存順に管理:
 
-```
-postgresql (GROUP 1)
-    |
-    v
-openfga (GROUP 2)
-    |
-    v
-contact-api (GROUP 3)
-```
-
 | Release | Chart | Description |
 |---------|-------|-------------|
-| postgresql | [bitnami/postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) (OCI) | PostgreSQL 17。contact-api 用と OpenFGA 用の 2 DB を initdb スクリプトで作成 |
+| postgresql | [bitnami/postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) (OCI) | contact-api 用と OpenFGA 用の 2 DB を initdb スクリプトで作成 |
 | openfga | [openfga/openfga](https://github.com/openfga/helm-charts) (OCI) | 認可サービス。PostgreSQL をデータストアに使用し、マイグレーションを自動実行 |
 | contact-api | `./charts/contact-api` (カスタムチャート) | Fastify API サーバー。Helm hook Job で DB マイグレーション・シード・OpenFGA セットアップを実行 |
 
@@ -59,10 +49,10 @@ make destroy
 
 ```
 .
-├── helmfile.yaml                 # Helmfile メイン定義
-├── Makefile                      # 開発者向けショートカット
+├── helmfile.yaml
+├── Makefile
 ├── charts/
-│   └── contact-api/              # contact-api カスタム Helm チャート
+│   └── contact-api/
 │       ├── Chart.yaml
 │       ├── values.yaml           # デフォルト値
 │       └── templates/
@@ -75,12 +65,12 @@ make destroy
 │           ├── job-seed.yaml          # DB シード (hook-weight: 1)
 │           └── job-openfga-setup.yaml # OpenFGA ストア/モデル作成 (hook-weight: 1)
 └── environments/
-    ├── dev/                      # 開発環境
+    ├── dev/
     │   ├── values.yaml
     │   ├── values-postgresql.yaml
     │   ├── values-openfga.yaml
     │   └── values-contact-api.yaml
-    └── prod/                     # 本番環境
+    └── prod/
         ├── values.yaml
         ├── values-postgresql.yaml
         ├── values-openfga.yaml
