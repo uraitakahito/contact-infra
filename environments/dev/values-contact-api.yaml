@@ -8,8 +8,8 @@ image:
 postgresql:
   host: postgresql
   port: 5432
-  database: contact_api
-  username: contact_api
+  database: contact_api_dev
+  username: contact_api_dev
   password: "dev-contact-api-password"
 
 openfga:

@@ -1,8 +1,8 @@
 fullnameOverride: postgresql
 
 auth:
-  username: contact_api
-  database: contact_api
+  username: contact_api_prod
+  database: contact_api_prod
   existingSecret: postgresql-credentials
   secretKeys:
     adminPasswordKey: postgres-password
