@@ -52,45 +52,6 @@ kubectl delete pvc --all -n contact
 > また `helm uninstall` は PVC を削除しないため、クリーンな再デプロイには
 > `kubectl delete pvc` で永続データを明示的に削除する必要がある。
 
-## Directory Structure
-
-```
-.
-├── helmfile.yaml
-├── charts/
-│   └── contact-api/
-│       ├── Chart.yaml
-│       ├── values.yaml           # デフォルト値
-│       ├── templates/
-│       │   ├── _helpers.tpl
-│       │   ├── configmap.yaml
-│       │   ├── secret.yaml
-│       │   ├── deployment.yaml
-│       │   ├── service.yaml
-│       │   ├── job-migrate.yaml       # DB マイグレーション (hook-weight: 0)
-│       │   ├── job-seed.yaml          # DB シード (hook-weight: 1)
-│       │   └── job-openfga-setup.yaml # OpenFGA ストア/モデル作成 (hook-weight: 1)
-│       └── tests/                # helm-unittest テストスイート
-│           ├── configmap_test.yaml
-│           ├── deployment_test.yaml
-│           ├── job_migrate_test.yaml
-│           ├── job_openfga_setup_test.yaml
-│           ├── job_seed_test.yaml
-│           ├── secret_test.yaml
-│           └── service_test.yaml
-└── environments/
-    ├── dev/
-    │   ├── values.yaml
-    │   ├── values-postgresql.yaml
-    │   ├── values-openfga.yaml
-    │   └── values-contact-api.yaml
-    └── prod/
-        ├── values.yaml
-        ├── values-postgresql.yaml
-        ├── values-openfga.yaml
-        └── values-contact-api.yaml
-```
-
 ## Environments
 
 ### dev
