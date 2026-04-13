@@ -59,10 +59,10 @@ make destroy
 
 ```
 .
-├── helmfile.yaml                 # Helmfile メイン定義
-├── Makefile                      # 開発者向けショートカット
+├── helmfile.yaml
+├── Makefile
 ├── charts/
-│   └── contact-api/              # contact-api カスタム Helm チャート
+│   └── contact-api/
 │       ├── Chart.yaml
 │       ├── values.yaml           # デフォルト値
 │       └── templates/
@@ -75,12 +75,12 @@ make destroy
 │           ├── job-seed.yaml          # DB シード (hook-weight: 1)
 │           └── job-openfga-setup.yaml # OpenFGA ストア/モデル作成 (hook-weight: 1)
 └── environments/
-    ├── dev/                      # 開発環境
+    ├── dev/
     │   ├── values.yaml
     │   ├── values-postgresql.yaml
     │   ├── values-openfga.yaml
     │   └── values-contact-api.yaml
-    └── prod/                     # 本番環境
+    └── prod/
         ├── values.yaml
         ├── values-postgresql.yaml
         ├── values-openfga.yaml
