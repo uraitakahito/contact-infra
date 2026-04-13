@@ -30,19 +30,19 @@ helmfile init
 
 ```bash
 # 依存関係の DAG を確認
-make show-dag
+helmfile -e dev show-dag
 
 # マニフェストをレンダリングして確認 (dry-run)
-make template
+helmfile -e dev template
 
 # dev 環境にデプロイ
-make sync
+helmfile -e dev sync
 
 # デプロイ済みとの差分を確認
-make diff
+helmfile -e dev diff
 
 # dev 環境を削除
-make destroy
+helmfile -e dev destroy
 ```
 
 ## Directory Structure
@@ -50,7 +50,6 @@ make destroy
 ```
 .
 ├── helmfile.yaml
-├── Makefile
 ├── charts/
 │   └── contact-api/
 │       ├── Chart.yaml
@@ -87,7 +86,7 @@ make destroy
 - OpenFGA Playground: 有効
 
 ```bash
-make sync
+helmfile -e dev sync
 ```
 
 ### prod

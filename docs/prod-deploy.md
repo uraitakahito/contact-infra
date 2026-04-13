@@ -88,7 +88,7 @@ kubectl create secret generic contact-api-db-credentials \
 ## 3. デプロイ
 
 ```bash
-make sync ENV=prod
+helmfile -e prod sync
 ```
 
 ## 4. 確認
