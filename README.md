@@ -139,6 +139,28 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 | `seed.enabled` | `true` | DB シード Job の有効化 |
 | `resources` | `{}` | CPU/memory リソース制限 |
 
+## Coding Conventions
+
+values ファイル内の文字列値はすべてダブルクォートで囲む。
+[Helm 公式ベストプラクティス](https://helm.sh/docs/chart_best_practices/values/)に従い、
+YAML の暗黙的な型変換による事故を防止する。
+
+```yaml
+# Good
+image:
+  repository: "contact-api"
+  tag: "latest"
+  pullPolicy: "Never"
+
+# Bad
+image:
+  repository: contact-api
+  tag: latest
+  pullPolicy: Never
+```
+
+整数・ブーリアン・空オブジェクト/配列はクォートしない。
+
 ## Documentation
 
 - [prod 環境デプロイ手順](docs/prod-deploy.md) - Secret 作成からデプロイ・確認まで

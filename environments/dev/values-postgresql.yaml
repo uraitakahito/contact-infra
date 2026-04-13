@@ -1,4 +1,4 @@
-fullnameOverride: postgresql
+fullnameOverride: "postgresql"
 
 auth:
   postgresPassword: "dev-postgres-password"
@@ -17,4 +17,4 @@ primary:
           CREATE DATABASE openfga OWNER openfga;
         EOSQL
   persistence:
-    size: 1Gi
+    size: "1Gi"

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 datastore:
-  engine: postgres
+  engine: "postgres"
   uri: "postgres://openfga:dev-openfga-password@postgresql:5432/openfga?sslmode=disable"
   applyMigrations: true
 
@@ -11,7 +11,7 @@ playground:
 
 http:
   enabled: true
-  addr: 0.0.0.0:8080
+  addr: "0.0.0.0:8080"
 
 grpc:
-  addr: 0.0.0.0:8081
+  addr: "0.0.0.0:8081"

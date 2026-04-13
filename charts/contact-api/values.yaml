@@ -1,25 +1,25 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/uraitakahito/contact-api
+  repository: "ghcr.io/uraitakahito/contact-api"
   tag: "latest"
-  pullPolicy: IfNotPresent
+  pullPolicy: "IfNotPresent"
 
 service:
-  type: ClusterIP
+  type: "ClusterIP"
   port: 80
 
 postgresql:
-  host: postgresql
+  host: "postgresql"
   port: 5432
-  database: contact_api_dev
-  username: contact_api_dev
+  database: "contact_api_dev"
+  username: "contact_api_dev"
   password: ""
   existingSecret: ""
 
 openfga:
-  apiUrl: http://openfga:8080
-  configFile: /shared/openfga-config.json
+  apiUrl: "http://openfga:8080"
+  configFile: "/shared/openfga-config.json"
 
 openfgaSetup:
   enabled: true

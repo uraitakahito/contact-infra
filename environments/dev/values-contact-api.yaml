@@ -1,16 +1,16 @@
 replicaCount: 1
 
 image:
-  repository: contact-api
+  repository: "contact-api"
   tag: "latest"
-  pullPolicy: Never
+  pullPolicy: "Never"
 
 postgresql:
-  host: postgresql
+  host: "postgresql"
   port: 5432
-  database: contact_api_dev
-  username: contact_api_dev
+  database: "contact_api_dev"
+  username: "contact_api_dev"
   password: "dev-contact-api-password"
 
 openfga:
-  apiUrl: http://openfga:8080
+  apiUrl: "http://openfga:8080"
