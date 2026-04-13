@@ -102,24 +102,7 @@ make sync
 
 ### prod
 
-- パスワードを `existingSecret` で外部 K8s Secret から参照 (事前作成が必要)
-- レプリカ数: 3 (openfga, contact-api)
-- seed Job: 無効
-- OpenFGA Playground: 無効
-- resource requests/limits 設定済み
-
-```bash
-make sync ENV=prod
-```
-
-**prod に必要な事前作成 Secret:**
-
-| Secret Name | Keys | Used By |
-|-------------|------|---------|
-| `postgresql-credentials` | `postgres-password`, `password` | PostgreSQL |
-| `postgresql-init-scripts` | `create-openfga-db.sql` | PostgreSQL initdb |
-| `openfga-datastore-credentials` | `uri` | OpenFGA |
-| `contact-api-db-credentials` | `CONTACT_API_DB_PASSWORD` | contact-api |
+[prod 環境デプロイ手順](docs/prod-deploy.md) を参照。
 
 ## Startup Sequence
 
@@ -163,6 +146,7 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 
 ## Documentation
 
+- [prod 環境デプロイ手順](docs/prod-deploy.md) - Secret 作成からデプロイ・確認まで
 - [API エンドポイント](docs/api-endpoints.md) - OrbStack 環境での API 操作例
 
 ## Related Repositories
