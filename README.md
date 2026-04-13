@@ -22,7 +22,6 @@
 - kubectl
 
 ```bash
-# Helmfile の依存プラグインを初期化
 helmfile init
 ```
 
