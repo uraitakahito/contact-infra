@@ -101,3 +101,19 @@ kubectl get pods -n contact
 export API_URL="http://$(kubectl get svc contact-api -n contact -o jsonpath='{.spec.clusterIP}')"
 curl -s "$API_URL/health/ready" | jq
 ```
+
+## 5. 環境削除
+
+```bash
+helmfile -e prod destroy --args --no-hooks
+```
+
+> **Note:** `--args --no-hooks` は、OpenFGA チャートの hook Job が uninstall 時に
+> ServiceAccount 削除済みの状態で再実行されハングする問題を回避するために必要。
+>
+> `helm uninstall` は PVC を削除しない。データを含めて完全に削除する場合は
+> PVC を手動で削除する:
+>
+> ```bash
+> kubectl delete pvc --all -n contact
+> ```
