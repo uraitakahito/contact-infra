@@ -1,8 +1,5 @@
 fullnameOverride: postgresql
 
-image:
-  tag: "17"
-
 auth:
   existingSecret: postgresql-credentials
   secretKeys:
