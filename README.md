@@ -30,27 +30,32 @@ helmfile init
 
 ```bash
 # 依存関係の DAG を確認
-make show-dag
+helmfile -e dev show-dag
 
 # マニフェストをレンダリングして確認 (dry-run)
-make template
+helmfile -e dev template
 
 # dev 環境にデプロイ
-make sync
+helmfile -e dev sync
 
 # デプロイ済みとの差分を確認
-make diff
+helmfile -e dev diff
 
 # dev 環境を削除
-make destroy
+helmfile -e dev destroy --args --no-hooks
+kubectl delete pvc --all -n contact
 ```
+
+> **Note:** `--args --no-hooks` は、サードパーティチャート (OpenFGA) の hook Job が
+> uninstall 時に ServiceAccount 削除済みの状態で再実行されハングする問題を回避するために必要。
+> また `helm uninstall` は PVC を削除しないため、クリーンな再デプロイには
+> `kubectl delete pvc` で永続データを明示的に削除する必要がある。
 
 ## Directory Structure
 
 ```
 .
 ├── helmfile.yaml
-├── Makefile
 ├── charts/
 │   └── contact-api/
 │       ├── Chart.yaml
@@ -87,7 +92,7 @@ make destroy
 - OpenFGA Playground: 有効
 
 ```bash
-make sync
+helmfile -e dev sync
 ```
 
 ### prod
