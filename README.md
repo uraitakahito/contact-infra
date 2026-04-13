@@ -22,7 +22,8 @@
 - kubectl
 
 ```bash
-helmfile init
+helm plugin install https://github.com/databus23/helm-diff
+helm plugin install https://github.com/helm-unittest/helm-unittest
 ```
 
 ## Quick Start
