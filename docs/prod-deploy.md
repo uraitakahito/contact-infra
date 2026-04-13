@@ -41,16 +41,17 @@ PostgreSQL 起動時に実行される initdb スクリプト。OpenFGA 用の�
 
 | Key | Description |
 |-----|-------------|
-| `create-openfga-db.sql` | OpenFGA 用 DB 作成 SQL |
+| `create-openfga-db.sh` | OpenFGA 用 DB 作成スクリプト |
 
 ```bash
 kubectl create secret generic postgresql-init-scripts \
   -n contact \
-  --from-literal=create-openfga-db.sql="$(cat <<'SQL'
-CREATE USER openfga WITH PASSWORD '<openfga user password>';
-CREATE DATABASE openfga OWNER openfga;
-SQL
-)"
+  --from-literal=create-openfga-db.sh='#!/bin/bash
+set -e
+PGPASSWORD="$(cat /opt/bitnami/postgresql/secrets/postgres-password)" psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+  CREATE USER openfga WITH PASSWORD '"'"'<openfga user password>'"'"';
+  CREATE DATABASE openfga OWNER openfga;
+EOSQL'
 ```
 
 ### openfga-datastore-credentials
