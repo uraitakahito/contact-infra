@@ -22,8 +22,9 @@
 - kubectl
 
 ```bash
-# Helmfile の依存プラグインを初期化
-helmfile init
+helm plugin list
+helm plugin install --verify=false https://github.com/databus23/helm-diff
+helm plugin install --verify=false https://github.com/helm-unittest/helm-unittest
 ```
 
 ## Quick Start
