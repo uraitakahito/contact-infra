@@ -36,22 +36,26 @@ helm plugin install --verify=false https://github.com/helm-unittest/helm-unittes
 kubectl create namespace contact
 
 # 2. Secret 作成
+POSTGRES_PASSWORD='dev-postgres-password'
+CONTACT_API_PASSWORD='dev-contact-api-password'
+OPENFGA_PASSWORD='dev-openfga-password'
+
 kubectl create secret generic postgresql-credentials \
   -n contact \
-  --from-literal=postgres-password='dev-postgres-password' \
-  --from-literal=contact-api-password='dev-contact-api-password'
+  --from-literal=postgres-password="${POSTGRES_PASSWORD}" \
+  --from-literal=contact-api-password="${CONTACT_API_PASSWORD}"
 
 kubectl create secret generic openfga-db-credentials \
   -n contact \
-  --from-literal=OPENFGA_DB_PASSWORD='dev-openfga-password'
+  --from-literal=OPENFGA_DB_PASSWORD="${OPENFGA_PASSWORD}"
 
 kubectl create secret generic openfga-datastore-credentials \
   -n contact \
-  --from-literal=uri='postgres://openfga:dev-openfga-password@postgresql:5432/openfga?sslmode=disable'
+  --from-literal=uri="postgres://openfga:${OPENFGA_PASSWORD}@postgresql:5432/openfga?sslmode=disable"
 
 kubectl create secret generic contact-api-db-credentials \
   -n contact \
-  --from-literal=CONTACT_API_DB_PASSWORD='dev-contact-api-password'
+  --from-literal=CONTACT_API_DB_PASSWORD="${CONTACT_API_PASSWORD}"
 
 # 3. デプロイ
 helmfile -e dev sync
