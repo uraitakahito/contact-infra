@@ -1,6 +1,7 @@
 fullnameOverride: "postgresql"
 
 auth:
+  # 一般ユーザー。通常のDB操作に使用
   username: "contact_api_prod"
   database: "contact_api_prod"
   existingSecret: "postgresql-credentials"
