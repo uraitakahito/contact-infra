@@ -27,7 +27,9 @@ helm plugin install --verify=false https://github.com/databus23/helm-diff
 helm plugin install --verify=false https://github.com/helm-unittest/helm-unittest
 ```
 
-## Quick Start
+## デプロイ手順
+
+### dev
 
 ```bash
 # 依存関係の DAG を確認
@@ -51,58 +53,6 @@ kubectl delete pvc --all -n contact
 > uninstall 時に ServiceAccount 削除済みの状態で再実行されハングする問題を回避するために必要。
 > また `helm uninstall` は PVC を削除しないため、クリーンな再デプロイには
 > `kubectl delete pvc` で永続データを明示的に削除する必要がある。
-
-## Directory Structure
-
-```
-.
-├── helmfile.yaml
-├── charts/
-│   └── contact-api/
-│       ├── Chart.yaml
-│       ├── values.yaml           # デフォルト値
-│       ├── templates/
-│       │   ├── _helpers.tpl
-│       │   ├── configmap.yaml
-│       │   ├── secret.yaml
-│       │   ├── deployment.yaml
-│       │   ├── service.yaml
-│       │   ├── job-migrate.yaml       # DB マイグレーション (hook-weight: 0)
-│       │   ├── job-seed.yaml          # DB シード (hook-weight: 1)
-│       │   └── job-openfga-setup.yaml # OpenFGA ストア/モデル作成 (hook-weight: 1)
-│       └── tests/                # helm-unittest テストスイート
-│           ├── configmap_test.yaml
-│           ├── deployment_test.yaml
-│           ├── job_migrate_test.yaml
-│           ├── job_openfga_setup_test.yaml
-│           ├── job_seed_test.yaml
-│           ├── secret_test.yaml
-│           └── service_test.yaml
-└── environments/
-    ├── dev/
-    │   ├── values.yaml
-    │   ├── values-postgresql.yaml
-    │   ├── values-openfga.yaml
-    │   └── values-contact-api.yaml
-    └── prod/
-        ├── values.yaml
-        ├── values-postgresql.yaml
-        ├── values-openfga.yaml
-        └── values-contact-api.yaml
-```
-
-## Environments
-
-### dev
-
-- パスワードを values ファイルにインラインで記載
-- レプリカ数: 1
-- seed Job: 有効
-- OpenFGA Playground: 有効
-
-```bash
-helmfile -e dev sync
-```
 
 ### prod
 
@@ -145,7 +95,7 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 | `openfga.configFile` | `/shared/openfga-config.json` | OpenFGA 設定ファイルパス |
 | `openfgaSetup.enabled` | `true` | OpenFGA セットアップ Job/initContainer の有効化 |
 | `migration.enabled` | `true` | DB マイグレーション Job の有効化 |
-| `seed.enabled` | `true` | DB シード Job の有効化 |
+| `seed.enabled` | `false` | DB シード Job の有効化 |
 | `resources` | `{}` | CPU/memory リソース制限 |
 
 ## Unit Tests

@@ -6,6 +6,9 @@ release:
   namespace: contact
 tests:
   - it: should render when seed.enabled is true
+    set:
+      seed:
+        enabled: true
     asserts:
       - isKind:
           of: Job
@@ -15,38 +18,50 @@ tests:
           count: 1
 
   - it: should not render when seed.enabled is false
-    set:
-      seed:
-        enabled: false
     asserts:
       - hasDocuments:
           count: 0
 
   - it: should have -seed suffix in name
+    set:
+      seed:
+        enabled: true
     asserts:
       - equal:
           path: metadata.name
           value: contact-api-seed
 
   - it: should have hook-weight 1
+    set:
+      seed:
+        enabled: true
     asserts:
       - equal:
           path: metadata.annotations["helm.sh/hook-weight"]
           value: "1"
 
   - it: should have post-install and post-upgrade hook
+    set:
+      seed:
+        enabled: true
     asserts:
       - equal:
           path: metadata.annotations["helm.sh/hook"]
           value: "post-install,post-upgrade"
 
   - it: should have backoffLimit 1
+    set:
+      seed:
+        enabled: true
     asserts:
       - equal:
           path: spec.backoffLimit
           value: 1
 
   - it: should run seed up command
+    set:
+      seed:
+        enabled: true
     asserts:
       - equal:
           path: spec.template.spec.containers[0].args
@@ -55,12 +70,18 @@ tests:
             - "up"
 
   - it: should have component label seed
+    set:
+      seed:
+        enabled: true
     asserts:
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/component"]
           value: seed
 
   - it: should have envFrom with configMapRef and secretRef
+    set:
+      seed:
+        enabled: true
     asserts:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name

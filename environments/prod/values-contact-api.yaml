@@ -15,9 +15,6 @@ postgresql:
 openfga:
   apiUrl: "http://openfga:8080"
 
-seed:
-  enabled: false
-
 resources:
   requests:
     cpu: "250m"
