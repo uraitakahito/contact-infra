@@ -2,7 +2,7 @@ replicaCount: 1
 
 datastore:
   engine: "postgres"
-  uri: "postgres://openfga:dev-openfga-password@postgresql:5432/openfga?sslmode=disable"
+  uriSecret: "openfga-datastore-credentials"
   applyMigrations: true
 
 playground:

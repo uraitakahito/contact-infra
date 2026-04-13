@@ -10,7 +10,7 @@ postgresql:
   port: 5432
   database: "contact_api_dev"
   username: "contact_api_dev"
-  password: "dev-contact-api-password"
+  existingSecret: "contact-api-db-credentials"
 
 openfga:
   apiUrl: "http://openfga:8080"

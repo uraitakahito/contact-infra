@@ -32,14 +32,40 @@ helm plugin install --verify=false https://github.com/helm-unittest/helm-unittes
 ### dev
 
 ```bash
-# 依存関係の DAG を確認
-helmfile -e dev show-dag
+# 1. Namespace 作成
+kubectl create namespace contact
+
+# 2. Secret 作成
+kubectl create secret generic postgresql-credentials \
+  -n contact \
+  --from-literal=postgres-password='dev-postgres-password' \
+  --from-literal=password='dev-contact-api-password'
+
+kubectl create secret generic postgresql-init-scripts \
+  -n contact \
+  --from-literal=create-openfga-db.sh='#!/bin/bash
+set -e
+PGPASSWORD="$(cat /opt/bitnami/postgresql/secrets/postgres-password)" psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+  CREATE USER openfga WITH PASSWORD '"'"'dev-openfga-password'"'"';
+  CREATE DATABASE openfga OWNER openfga;
+EOSQL'
+
+kubectl create secret generic openfga-datastore-credentials \
+  -n contact \
+  --from-literal=uri='postgres://openfga:dev-openfga-password@postgresql:5432/openfga?sslmode=disable'
+
+kubectl create secret generic contact-api-db-credentials \
+  -n contact \
+  --from-literal=CONTACT_API_DB_PASSWORD='dev-contact-api-password'
+
+# 3. デプロイ
+helmfile -e dev sync
 
 # マニフェストをレンダリングして確認 (dry-run)
 helmfile -e dev template
 
-# dev 環境にデプロイ
-helmfile -e dev sync
+# 依存関係の DAG を確認
+helmfile -e dev show-dag
 
 # デプロイ済みとの差分を確認
 helmfile -e dev diff
@@ -47,12 +73,13 @@ helmfile -e dev diff
 # dev 環境を削除
 helmfile -e dev destroy --args --no-hooks
 kubectl delete pvc --all -n contact
+kubectl delete secret --all -n contact
 ```
 
 > **Note:** `--args --no-hooks` は、サードパーティチャート (OpenFGA) の hook Job が
 > uninstall 時に ServiceAccount 削除済みの状態で再実行されハングする問題を回避するために必要。
-> また `helm uninstall` は PVC を削除しないため、クリーンな再デプロイには
-> `kubectl delete pvc` で永続データを明示的に削除する必要がある。
+> また `helm uninstall` は PVC や Secret を削除しないため、クリーンな再デプロイには
+> `kubectl delete pvc` と `kubectl delete secret` で明示的に削除する必要がある。
 
 ### prod
 

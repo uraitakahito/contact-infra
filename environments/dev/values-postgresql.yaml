@@ -3,22 +3,14 @@ fullnameOverride: "postgresql"
 auth:
   # 一般ユーザー。通常のDB操作に使用
   username: "contact_api_dev"
-  password: "dev-contact-api-password"
   database: "contact_api_dev"
-  # 管理者ユーザー。OpenFGA用ユーザー/DBを作るにはスーパーユーザー権限が必要
-  postgresPassword: "dev-postgres-password"
+  existingSecret: "postgresql-credentials"
+  secretKeys:
+    adminPasswordKey: "postgres-password"
+    userPasswordKey: "password"
 
 primary:
   initdb:
-    scripts:
-      create-openfga-db.sh: |
-        #!/bin/bash
-        set -e
-        # $POSTGRES_POSTGRES_PASSWORD は bitnami/postgresql チャートが
-        # auth.postgresPassword の値からコンテナ内に自動設定する環境変数
-        PGPASSWORD="$POSTGRES_POSTGRES_PASSWORD" psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
-          CREATE USER openfga WITH PASSWORD 'dev-openfga-password';
-          CREATE DATABASE openfga OWNER openfga;
-        EOSQL
+    scriptsSecret: "postgresql-init-scripts"
   persistence:
     size: "1Gi"
