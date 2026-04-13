@@ -1,0 +1,103 @@
+# prod 環境デプロイ手順
+
+## 前提条件
+
+- Kubernetes クラスタ
+- Helm v3+
+- Helmfile v1.4+
+- kubectl
+
+## 1. Namespace 作成
+
+```bash
+kubectl create namespace contact
+```
+
+## 2. Secret 作成
+
+デプロイ前に 4 つの Secret を `contact` namespace に作成する。
+
+以下の例ではパスワードをプレースホルダーにしている。実際の値に置き換えること。
+
+### postgresql-credentials
+
+PostgreSQL の管理者パスワードと contact_api ユーザーのパスワード。
+
+| Key | Description |
+|-----|-------------|
+| `postgres-password` | postgres ユーザー (管理者) のパスワード |
+| `password` | contact_api ユーザーのパスワード |
+
+```bash
+kubectl create secret generic postgresql-credentials \
+  -n contact \
+  --from-literal=postgres-password='<postgres admin password>' \
+  --from-literal=password='<contact_api user password>'
+```
+
+### postgresql-init-scripts
+
+PostgreSQL 起動時に実行される initdb スクリプト。OpenFGA 用のユーザーとデータベースを作成する。
+
+| Key | Description |
+|-----|-------------|
+| `create-openfga-db.sql` | OpenFGA 用 DB 作成 SQL |
+
+```bash
+kubectl create secret generic postgresql-init-scripts \
+  -n contact \
+  --from-literal=create-openfga-db.sql="$(cat <<'SQL'
+CREATE USER openfga WITH PASSWORD '<openfga user password>';
+CREATE DATABASE openfga OWNER openfga;
+SQL
+)"
+```
+
+### openfga-datastore-credentials
+
+OpenFGA が PostgreSQL に接続するための URI。
+
+| Key | Description |
+|-----|-------------|
+| `uri` | PostgreSQL 接続文字列 |
+
+```bash
+kubectl create secret generic openfga-datastore-credentials \
+  -n contact \
+  --from-literal=uri='postgres://openfga:<openfga user password>@postgresql:5432/openfga?sslmode=disable'
+```
+
+> `<openfga user password>` は `postgresql-init-scripts` で指定したパスワードと一致させること。
+
+### contact-api-db-credentials
+
+contact-api が PostgreSQL に接続するためのパスワード。
+
+| Key | Description |
+|-----|-------------|
+| `CONTACT_API_DB_PASSWORD` | contact_api ユーザーのパスワード |
+
+```bash
+kubectl create secret generic contact-api-db-credentials \
+  -n contact \
+  --from-literal=CONTACT_API_DB_PASSWORD='<contact_api user password>'
+```
+
+> `<contact_api user password>` は `postgresql-credentials` の `password` と一致させること。
+
+## 3. デプロイ
+
+```bash
+make sync ENV=prod
+```
+
+## 4. 確認
+
+```bash
+# Pod の状態確認
+kubectl get pods -n contact
+
+# contact-api のヘルスチェック
+export API_URL="http://$(kubectl get svc contact-api -n contact -o jsonpath='{.spec.clusterIP}')"
+curl -s "$API_URL/health/ready" | jq
+```
