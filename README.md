@@ -58,7 +58,7 @@ kubectl delete pvc --all -n contact
 
 - パスワードを values ファイルにインラインで記載
 - レプリカ数: 1
-- seed Job: 有効
+- seed Job: 無効（デフォルト）
 - OpenFGA Playground: 有効
 
 ```bash
@@ -106,7 +106,7 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 | `openfga.configFile` | `/shared/openfga-config.json` | OpenFGA 設定ファイルパス |
 | `openfgaSetup.enabled` | `true` | OpenFGA セットアップ Job/initContainer の有効化 |
 | `migration.enabled` | `true` | DB マイグレーション Job の有効化 |
-| `seed.enabled` | `true` | DB シード Job の有効化 |
+| `seed.enabled` | `false` | DB シード Job の有効化 |
 | `resources` | `{}` | CPU/memory リソース制限 |
 
 ## Unit Tests
