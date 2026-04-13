@@ -8,16 +8,6 @@
 
 3 つの Helm リリースを依存順に管理:
 
-```
-postgresql (GROUP 1)
-    |
-    v
-openfga (GROUP 2)
-    |
-    v
-contact-api (GROUP 3)
-```
-
 | Release | Chart | Description |
 |---------|-------|-------------|
 | postgresql | [bitnami/postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) (OCI) | PostgreSQL 17。contact-api 用と OpenFGA 用の 2 DB を initdb スクリプトで作成 |
