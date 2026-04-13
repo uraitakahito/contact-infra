@@ -153,7 +153,6 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 [helm-unittest](https://github.com/helm-unittest/helm-unittest) でカスタムチャートのテンプレートを検証する。
 
 ```bash
-# 全テスト実行
 helm unittest charts/contact-api
 ```
 
