@@ -6,10 +6,6 @@ environments:
     values:
       - environments/prod/values.yaml
 
-repositories:
-  - name: openfga
-    url: https://openfga.github.io/helm-charts
-
 ---
 
 releases:
@@ -22,7 +18,8 @@ releases:
 
   - name: openfga
     namespace: contact
-    chart: openfga/openfga
+    chart: oci://ghcr.io/openfga/helm-charts/openfga
+    version: "0.3.1"
     needs:
       - contact/postgresql
     values:
