@@ -1,10 +1,12 @@
 fullnameOverride: "postgresql"
 
 auth:
-  postgresPassword: "dev-postgres-password"
+  # 一般ユーザー。通常のDB操作に使用
   username: "contact_api_dev"
   password: "dev-contact-api-password"
   database: "contact_api_dev"
+  # 管理者ユーザー。OpenFGA用ユーザー/DBを作るにはスーパーユーザー権限が必要
+  postgresPassword: "dev-postgres-password"
 
 primary:
   initdb:

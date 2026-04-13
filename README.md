@@ -153,19 +153,8 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 [helm-unittest](https://github.com/helm-unittest/helm-unittest) でカスタムチャートのテンプレートを検証する。
 
 ```bash
-# 全テスト実行
 helm unittest charts/contact-api
 ```
-
-テストファイルは `charts/contact-api/tests/` に配置。各テンプレートに対応するテストスイートで以下を検証:
-
-- リソースの kind / apiVersion
-- 条件分岐 (`existingSecret`, `migration.enabled`, `seed.enabled`, `openfgaSetup.enabled`)
-- values からの値伝搬
-- Helm hook annotations と hook-weight の順序
-- プローブ、ボリューム、initContainer の構造
-
-CI では `helmfile-lint` とは別の `helm-unittest` ジョブとして自動実行される。
 
 ## Coding Conventions
 
