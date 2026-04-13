@@ -1,0 +1,80 @@
+suite: Service
+templates:
+  - templates/service.yaml
+release:
+  name: contact-api
+  namespace: contact
+tests:
+  - it: should render a Service with default values
+    asserts:
+      - isKind:
+          of: Service
+      - isAPIVersion:
+          of: v1
+      - hasDocuments:
+          count: 1
+
+  - it: should set metadata name using fullname helper
+    asserts:
+      - equal:
+          path: metadata.name
+          value: contact-api
+
+  - it: should have standard labels
+    asserts:
+      - isNotEmpty:
+          path: metadata.labels["helm.sh/chart"]
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+
+  - it: should default to ClusterIP type
+    asserts:
+      - equal:
+          path: spec.type
+          value: ClusterIP
+
+  - it: should use port from values
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 80
+
+  - it: should set targetPort to http
+    asserts:
+      - equal:
+          path: spec.ports[0].targetPort
+          value: http
+
+  - it: should set port name to http
+    asserts:
+      - equal:
+          path: spec.ports[0].name
+          value: http
+
+  - it: should have selector labels matching selectorLabels helper
+    asserts:
+      - equal:
+          path: spec.selector["app.kubernetes.io/name"]
+          value: contact-api
+      - equal:
+          path: spec.selector["app.kubernetes.io/instance"]
+          value: contact-api
+
+  - it: should reflect custom service type
+    set:
+      service:
+        type: "NodePort"
+    asserts:
+      - equal:
+          path: spec.type
+          value: NodePort
+
+  - it: should reflect custom service port
+    set:
+      service:
+        port: 8080
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 8080

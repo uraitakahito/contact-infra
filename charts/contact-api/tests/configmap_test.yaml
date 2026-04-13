@@ -1,0 +1,87 @@
+suite: ConfigMap
+templates:
+  - templates/configmap.yaml
+release:
+  name: contact-api
+  namespace: contact
+tests:
+  - it: should render a ConfigMap with default values
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - isAPIVersion:
+          of: v1
+      - hasDocuments:
+          count: 1
+
+  - it: should set metadata name using fullname helper
+    asserts:
+      - equal:
+          path: metadata.name
+          value: contact-api
+
+  - it: should have all six data keys
+    asserts:
+      - isNotEmpty:
+          path: data.CONTACT_API_DB_HOST
+      - isNotEmpty:
+          path: data.CONTACT_API_DB_PORT
+      - isNotEmpty:
+          path: data.CONTACT_API_DB_NAME
+      - isNotEmpty:
+          path: data.CONTACT_API_DB_USER
+      - isNotEmpty:
+          path: data.OPENFGA_API_URL
+      - isNotEmpty:
+          path: data.OPENFGA_CONFIG_FILE
+
+  - it: should propagate default postgresql values
+    asserts:
+      - equal:
+          path: data.CONTACT_API_DB_HOST
+          value: "postgresql"
+      - equal:
+          path: data.CONTACT_API_DB_PORT
+          value: "5432"
+      - equal:
+          path: data.CONTACT_API_DB_NAME
+          value: "contact_api_dev"
+      - equal:
+          path: data.CONTACT_API_DB_USER
+          value: "contact_api_dev"
+
+  - it: should propagate custom postgresql values
+    set:
+      postgresql:
+        host: "custom-pg"
+        port: 5433
+        database: "mydb"
+        username: "myuser"
+    asserts:
+      - equal:
+          path: data.CONTACT_API_DB_HOST
+          value: "custom-pg"
+      - equal:
+          path: data.CONTACT_API_DB_PORT
+          value: "5433"
+      - equal:
+          path: data.CONTACT_API_DB_NAME
+          value: "mydb"
+      - equal:
+          path: data.CONTACT_API_DB_USER
+          value: "myuser"
+
+  - it: should propagate default openfga values
+    asserts:
+      - equal:
+          path: data.OPENFGA_API_URL
+          value: "http://openfga:8080"
+      - equal:
+          path: data.OPENFGA_CONFIG_FILE
+          value: "/shared/openfga-config.json"
+
+  - it: should quote port as string via template function
+    asserts:
+      - matchRegex:
+          path: data.CONTACT_API_DB_PORT
+          pattern: "^[0-9]+$"
