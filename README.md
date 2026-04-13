@@ -59,7 +59,6 @@ kubectl delete pvc --all -n contact
 - パスワードを values ファイルにインラインで記載
 - レプリカ数: 1
 - seed Job: 無効（デフォルト）
-- OpenFGA Playground: 有効
 
 ```bash
 helmfile -e dev sync
