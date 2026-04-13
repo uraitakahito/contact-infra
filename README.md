@@ -156,8 +156,6 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 helm unittest charts/contact-api
 ```
 
-CI では `helmfile-lint` とは別の `helm-unittest` ジョブとして自動実行される。
-
 ## Coding Conventions
 
 values ファイル内の文字列値はすべてダブルクォートで囲む。
