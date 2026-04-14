@@ -60,9 +60,12 @@ curl -s "$API_URL/health/ready" | jq
 ### 便利コマンド
 
 ```bash
-helmfile -e dev template    # マニフェストをレンダリング (dry-run)
-helmfile -e dev show-dag    # 依存関係の DAG を確認
-helmfile -e dev diff        # デプロイ済みとの差分を確認
+# マニフェストをレンダリング (dry-run)
+helmfile -e dev template
+# 依存関係の DAG を確認
+helmfile -e dev show-dag
+# デプロイ済みとの差分を確認
+helmfile -e dev diff
 ```
 
 ## 削除手順
