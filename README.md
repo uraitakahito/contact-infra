@@ -75,8 +75,11 @@ helmfile -e dev show-dag
 
 # デプロイ済みとの差分を確認
 helmfile -e dev diff
+```
 
-# dev 環境を削除
+## 削除手順
+
+```bash
 helmfile -e dev destroy --args --no-hooks
 kubectl delete pvc --all -n contact
 kubectl delete secret --all -n contact
