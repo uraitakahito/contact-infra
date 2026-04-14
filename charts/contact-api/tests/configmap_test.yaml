@@ -45,10 +45,10 @@ tests:
           value: "5432"
       - equal:
           path: data.CONTACT_API_DB_NAME
-          value: "contact_api_dev"
+          value: "contact_api"
       - equal:
           path: data.CONTACT_API_DB_USER
-          value: "contact_api_dev"
+          value: "contact_api"
 
   - it: should propagate custom postgresql values
     set:
