@@ -5,15 +5,15 @@
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `replicaCount` | `1` | Pod レプリカ数 |
-| `image.repository` | `ghcr.io/uraitakahito/contact-api` | Docker イメージリポジトリ |
+| `image.repository` | `contact-api` | Docker イメージリポジトリ |
 | `image.tag` | `latest` | Docker イメージタグ |
-| `image.pullPolicy` | `IfNotPresent` | イメージ pull ポリシー |
+| `image.pullPolicy` | `Never` | イメージ pull ポリシー |
 | `service.type` | `ClusterIP` | Service タイプ |
 | `service.port` | `80` | Service ポート |
 | `postgresql.host` | `postgresql` | PostgreSQL ホスト名 |
 | `postgresql.port` | `5432` | PostgreSQL ポート |
-| `postgresql.database` | `contact_api_dev` | データベース名 |
-| `postgresql.username` | `contact_api_dev` | データベースユーザー |
+| `postgresql.database` | `contact_api` | データベース名 |
+| `postgresql.username` | `contact_api` | データベースユーザー |
 | `postgresql.password` | `""` | データベースパスワード |
 | `postgresql.existingSecret` | `""` | 既存 Secret 名 (設定時は password より優先) |
 | `openfga.apiUrl` | `http://openfga:8080` | OpenFGA API URL |
