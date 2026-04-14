@@ -70,7 +70,7 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[0].image
-          value: "contact-api:latest"
+          value: "ghcr.io/uraitakahito/contact-api:1.0.0"
 
   - it: should have envFrom with configMapRef and secretRef
     asserts:

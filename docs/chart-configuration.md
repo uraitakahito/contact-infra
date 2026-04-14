@@ -5,9 +5,9 @@
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `replicaCount` | `1` | Pod レプリカ数 |
-| `image.repository` | `contact-api` | Docker イメージリポジトリ |
-| `image.tag` | `latest` | Docker イメージタグ |
-| `image.pullPolicy` | `Never` | イメージ pull ポリシー |
+| `image.repository` | `ghcr.io/uraitakahito/contact-api` | Docker イメージリポジトリ |
+| `image.tag` | `1.0.0` | Docker イメージタグ |
+| `image.pullPolicy` | `IfNotPresent` | イメージ pull ポリシー |
 | `service.type` | `ClusterIP` | Service タイプ |
 | `service.port` | `80` | Service ポート |
 | `postgresql.host` | `postgresql` | PostgreSQL ホスト名 |

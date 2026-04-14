@@ -1,10 +1,5 @@
 replicaCount: 1
 
-image:
-  repository: "contact-api"
-  tag: "latest"
-  pullPolicy: "Never"
-
 postgresql:
   host: "postgresql"
   port: 5432
