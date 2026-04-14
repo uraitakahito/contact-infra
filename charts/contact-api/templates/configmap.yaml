@@ -1,3 +1,4 @@
+{{- /* ConfigMap は平文で保存され kubectl get configmap -o yaml で誰でも読めるため、パスワード等の機密情報は Secret に記述すること */ -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -36,6 +36,8 @@ devの場合の例:
 kubectl create namespace contact
 
 # 2. Secret 作成
+# パスワード等の機密情報は ConfigMap ではなく Secret に格納する。
+# ConfigMap は平文で保存され kubectl get configmap -o yaml で誰でも読めるため。
 POSTGRES_PASSWORD='dev-postgres-password'
 CONTACT_API_PASSWORD='dev-contact-api-password'
 OPENFGA_PASSWORD='dev-openfga-password'
