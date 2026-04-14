@@ -29,7 +29,7 @@ helm plugin install --verify=false https://github.com/helm-unittest/helm-unittes
 
 ## デプロイ手順
 
-### dev
+devの場合の例:
 
 ```bash
 # 1. Namespace 作成
