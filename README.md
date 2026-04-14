@@ -32,8 +32,10 @@ helm plugin install --verify=false https://github.com/helm-unittest/helm-unittes
 devの場合の例:
 
 ```bash
+NAMESPACE='contact'
+
 # 1. Namespace 作成
-kubectl create namespace contact
+kubectl create namespace "${NAMESPACE}"
 
 # 2. Secret 作成
 # パスワード等の機密情報は ConfigMap ではなく Secret に格納する。
@@ -43,28 +45,28 @@ CONTACT_API_PASSWORD='dev-contact-api-password'
 OPENFGA_PASSWORD='dev-openfga-password'
 
 kubectl create secret generic postgresql-credentials \
-  -n contact \
+  -n "${NAMESPACE}" \
   --from-literal=postgres-password="${POSTGRES_PASSWORD}" \
   --from-literal=contact-api-password="${CONTACT_API_PASSWORD}"
 
 kubectl create secret generic openfga-db-credentials \
-  -n contact \
+  -n "${NAMESPACE}" \
   --from-literal=OPENFGA_DB_PASSWORD="${OPENFGA_PASSWORD}"
 
 kubectl create secret generic openfga-datastore-credentials \
-  -n contact \
+  -n "${NAMESPACE}" \
   --from-literal=uri="postgres://openfga:${OPENFGA_PASSWORD}@postgresql:5432/openfga?sslmode=disable"
 
 kubectl create secret generic contact-api-db-credentials \
-  -n contact \
+  -n "${NAMESPACE}" \
   --from-literal=CONTACT_API_DB_PASSWORD="${CONTACT_API_PASSWORD}"
 
 # 3. デプロイ
 helmfile -e dev sync
 
 # 4. 確認
-kubectl get pods -n contact
-export API_URL="http://$(kubectl get svc contact-api -n contact -o jsonpath='{.spec.clusterIP}')"
+kubectl get pods -n "${NAMESPACE}"
+export API_URL="http://$(kubectl get svc contact-api -n "${NAMESPACE}" -o jsonpath='{.spec.clusterIP}')"
 curl -s "$API_URL/health/ready" | jq
 
 # マニフェストをレンダリングして確認 (dry-run)
@@ -80,9 +82,10 @@ helmfile -e dev diff
 ## 削除手順
 
 ```bash
+NAMESPACE='contact'
 helmfile -e dev destroy --args --no-hooks
-kubectl delete pvc --all -n contact
-kubectl delete secret --all -n contact
+kubectl delete pvc --all -n "${NAMESPACE}"
+kubectl delete secret --all -n "${NAMESPACE}"
 ```
 
 > **Note:** `--args --no-hooks` は、サードパーティチャート (OpenFGA) の hook Job が
