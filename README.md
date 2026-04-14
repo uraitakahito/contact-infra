@@ -60,6 +60,11 @@ kubectl create secret generic contact-api-db-credentials \
 # 3. デプロイ
 helmfile -e dev sync
 
+# 4. 確認
+kubectl get pods -n contact
+export API_URL="http://$(kubectl get svc contact-api -n contact -o jsonpath='{.spec.clusterIP}')"
+curl -s "$API_URL/health/ready" | jq
+
 # マニフェストをレンダリングして確認 (dry-run)
 helmfile -e dev template
 
@@ -79,10 +84,6 @@ kubectl delete secret --all -n contact
 > uninstall 時に ServiceAccount 削除済みの状態で再実行されハングする問題を回避するために必要。
 > また `helm uninstall` は PVC や Secret を削除しないため、クリーンな再デプロイには
 > `kubectl delete pvc` と `kubectl delete secret` で明示的に削除する必要がある。
-
-### prod
-
-[prod 環境デプロイ手順](docs/prod-deploy.md) を参照。
 
 ## Startup Sequence
 
@@ -156,7 +157,6 @@ image:
 
 ## Documentation
 
-- [prod 環境デプロイ手順](docs/prod-deploy.md) - Secret 作成からデプロイ・確認まで
 - [API エンドポイント](docs/api-endpoints.md) - OrbStack 環境での API 操作例
 
 ## Related Repositories
