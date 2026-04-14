@@ -32,17 +32,15 @@ kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply
 
 # 2. Secrets
 # パスワード等の機密情報は Secret に格納する (ConfigMap は平文で誰でも読めるため)
-# bitnami/postgresql が 1 つの Secret から両キーを参照するため Secret を分割できない
-#   postgres-password:    postgres スーパーユーザー (initdb で OpenFGA 用 DB・ユーザー作成に使用)
-#   contact-api-{dev,prod}-password: contact-api 用の一般ユーザー (通常の DB 操作に使用)
 kubectl create secret generic postgresql-credentials \
   -n "${NAMESPACE}" \
   --from-literal=postgres-password="${POSTGRES_PASSWORD}" \
-  --from-literal=contact-api-"${ENV}"-password="${CONTACT_API_PASSWORD}" \
   --dry-run=client -o yaml | kubectl apply -f -
 
-kubectl create secret generic openfga-db-credentials \
+# initdb スクリプトに環境変数として渡す一般ユーザーのパスワード
+kubectl create secret generic postgresql-initdb-credentials \
   -n "${NAMESPACE}" \
+  --from-literal=CONTACT_API_DB_PASSWORD="${CONTACT_API_PASSWORD}" \
   --from-literal=OPENFGA_DB_PASSWORD="${OPENFGA_PASSWORD}" \
   --dry-run=client -o yaml | kubectl apply -f -
 

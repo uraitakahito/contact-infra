@@ -1,24 +1,23 @@
 fullnameOverride: "postgresql"
 
 auth:
-  # 一般ユーザー。通常のDB操作に使用
-  username: "contact_api_dev"
-  database: "contact_api_dev"
   existingSecret: "postgresql-credentials"
   secretKeys:
     adminPasswordKey: "postgres-password"
-    userPasswordKey: "contact-api-dev-password"
 
 primary:
-  # initdb スクリプトに OPENFGA_DB_PASSWORD 環境変数を渡すための Secret
-  extraEnvVarsSecret: "openfga-db-credentials"
+  extraEnvVarsSecret: "postgresql-initdb-credentials"
   initdb:
     scripts:
-      create-openfga-db.sh: |
+      create-users.sh: |
         #!/bin/bash
         set -e
+        # bitnami/postgresql の組み込みユーザー作成 (auth.username) は 1 ユーザーしか対応していないため、
+        # すべての一般ユーザーを initdb スクリプトで統一的に作成する
         PGPASSWORD="$(cat /opt/bitnami/postgresql/secrets/postgres-password)" \
           psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+            CREATE USER contact_api_dev WITH PASSWORD '${CONTACT_API_DB_PASSWORD}';
+            CREATE DATABASE contact_api_dev OWNER contact_api_dev;
             CREATE USER openfga WITH PASSWORD '${OPENFGA_DB_PASSWORD}';
             CREATE DATABASE openfga OWNER openfga;
         EOSQL
