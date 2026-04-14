@@ -158,7 +158,3 @@ image:
 ## Documentation
 
 - [API エンドポイント](docs/api-endpoints.md) - OrbStack 環境での API 操作例
-
-## Related Repositories
-
-- [contact-api](https://github.com/uraitakahito/contact-api) - API アプリケーション本体
