@@ -10,6 +10,7 @@ auth:
     userPasswordKey: "contact-api-dev-password"
 
 primary:
+  # initdb スクリプトに OPENFGA_DB_PASSWORD 環境変数を渡すための Secret
   extraEnvVarsSecret: "openfga-db-credentials"
   initdb:
     scripts:
