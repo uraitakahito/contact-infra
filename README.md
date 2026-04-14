@@ -99,25 +99,7 @@ helm unittest charts/contact-api
 
 ## Coding Conventions
 
-values ファイル内の文字列値はすべてダブルクォートで囲む。
-[Helm 公式ベストプラクティス](https://helm.sh/docs/chart_best_practices/values/)に従い、
-YAML の暗黙的な型変換による事故を防止する。
-
-```yaml
-# Good
-image:
-  repository: "contact-api"
-  tag: "latest"
-  pullPolicy: "Never"
-
-# Bad
-image:
-  repository: contact-api
-  tag: latest
-  pullPolicy: Never
-```
-
-整数・ブーリアン・空オブジェクト/配列はクォートしない。
+[Helm 公式ベストプラクティス](https://helm.sh/docs/chart_best_practices/values/)に従う。
 
 ## Documentation
 
