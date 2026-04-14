@@ -7,7 +7,7 @@ auth:
   existingSecret: "postgresql-credentials"
   secretKeys:
     adminPasswordKey: "postgres-password"
-    userPasswordKey: "contact-api-password"
+    userPasswordKey: "contact-api-prod-password"
 
 primary:
   extraEnvVarsSecret: "openfga-db-credentials"
