@@ -57,7 +57,7 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[0].image
-          value: "ghcr.io/uraitakahito/contact-api:latest"
+          value: "contact-api:latest"
 
   - it: should reflect custom image tag
     set:
@@ -66,13 +66,13 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[0].image
-          value: "ghcr.io/uraitakahito/contact-api:v2.0.0"
+          value: "contact-api:v2.0.0"
 
   - it: should use imagePullPolicy from values
     asserts:
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy
-          value: IfNotPresent
+          value: Never
 
   - it: should expose port 80 named http
     asserts:
@@ -184,7 +184,7 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.initContainers[0].image
-          value: "ghcr.io/uraitakahito/contact-api:latest"
+          value: "contact-api:latest"
 
   - it: should pass openfga args to initContainer
     asserts:

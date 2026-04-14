@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: "ghcr.io/uraitakahito/contact-api"
+  repository: "contact-api"
   tag: "latest"
-  pullPolicy: "IfNotPresent"
+  pullPolicy: "Never"
 
 service:
   type: "ClusterIP"
