@@ -29,63 +29,50 @@ helm plugin install --verify=false https://github.com/helm-unittest/helm-unittes
 
 ## デプロイ手順
 
-devの場合の例:
+### dev
 
 ```bash
-# 1. Namespace 作成
-kubectl create namespace contact
+./scripts/deploy.sh dev
+```
 
-# 2. Secret 作成
-# パスワード等の機密情報は ConfigMap ではなく Secret に格納する。
-# ConfigMap は平文で保存され kubectl get configmap -o yaml で誰でも読めるため。
-POSTGRES_PASSWORD='dev-postgres-password'
-CONTACT_API_PASSWORD='dev-contact-api-password'
-OPENFGA_PASSWORD='dev-openfga-password'
+dev 環境ではデフォルトのパスワードが使用される。カスタマイズする場合:
 
-kubectl create secret generic postgresql-credentials \
-  -n contact \
-  --from-literal=postgres-password="${POSTGRES_PASSWORD}" \
-  --from-literal=contact-api-password="${CONTACT_API_PASSWORD}"
+```bash
+POSTGRES_PASSWORD='xxx' CONTACT_API_PASSWORD='xxx' OPENFGA_PASSWORD='xxx' \
+  ./scripts/deploy.sh dev
+```
 
-kubectl create secret generic openfga-db-credentials \
-  -n contact \
-  --from-literal=OPENFGA_DB_PASSWORD="${OPENFGA_PASSWORD}"
+### prod
 
-kubectl create secret generic openfga-datastore-credentials \
-  -n contact \
-  --from-literal=uri="postgres://openfga:${OPENFGA_PASSWORD}@postgresql:5432/openfga?sslmode=disable"
+```bash
+POSTGRES_PASSWORD='...' CONTACT_API_PASSWORD='...' OPENFGA_PASSWORD='...' \
+  ./scripts/deploy.sh prod
+```
 
-kubectl create secret generic contact-api-db-credentials \
-  -n contact \
-  --from-literal=CONTACT_API_DB_PASSWORD="${CONTACT_API_PASSWORD}"
+### 確認
 
-# 3. デプロイ
-helmfile -e dev sync
-
-# 4. 確認
+```bash
 kubectl get pods -n contact
 export API_URL="http://$(kubectl get svc contact-api -n contact -o jsonpath='{.spec.clusterIP}')"
 curl -s "$API_URL/health/ready" | jq
-
-# マニフェストをレンダリングして確認 (dry-run)
-helmfile -e dev template
-
-# 依存関係の DAG を確認
-helmfile -e dev show-dag
-
-# デプロイ済みとの差分を確認
-helmfile -e dev diff
-
-# dev 環境を削除
-helmfile -e dev destroy --args --no-hooks
-kubectl delete pvc --all -n contact
-kubectl delete secret --all -n contact
 ```
 
-> **Note:** `--args --no-hooks` は、サードパーティチャート (OpenFGA) の hook Job が
-> uninstall 時に ServiceAccount 削除済みの状態で再実行されハングする問題を回避するために必要。
-> また `helm uninstall` は PVC や Secret を削除しないため、クリーンな再デプロイには
-> `kubectl delete pvc` と `kubectl delete secret` で明示的に削除する必要がある。
+### 便利コマンド
+
+```bash
+# マニフェストをレンダリング (dry-run)
+helmfile -e dev template
+# 依存関係の DAG を確認
+helmfile -e dev show-dag
+# デプロイ済みとの差分を確認
+helmfile -e dev diff
+```
+
+## 削除手順
+
+```bash
+./scripts/destroy.sh dev
+```
 
 ## Startup Sequence
 
@@ -102,31 +89,6 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 | 7 | OpenFGA 設定ファイル生成 | Deployment initContainer |
 | 8 | contact-api サーバー起動 | Deployment main container |
 
-## contact-api Chart Configuration
-
-`charts/contact-api/values.yaml` で設定可能な値:
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `replicaCount` | `1` | Pod レプリカ数 |
-| `image.repository` | `ghcr.io/uraitakahito/contact-api` | Docker イメージリポジトリ |
-| `image.tag` | `latest` | Docker イメージタグ |
-| `image.pullPolicy` | `IfNotPresent` | イメージ pull ポリシー |
-| `service.type` | `ClusterIP` | Service タイプ |
-| `service.port` | `80` | Service ポート |
-| `postgresql.host` | `postgresql` | PostgreSQL ホスト名 |
-| `postgresql.port` | `5432` | PostgreSQL ポート |
-| `postgresql.database` | `contact_api_dev` | データベース名 |
-| `postgresql.username` | `contact_api_dev` | データベースユーザー |
-| `postgresql.password` | `""` | データベースパスワード |
-| `postgresql.existingSecret` | `""` | 既存 Secret 名 (設定時は password より優先) |
-| `openfga.apiUrl` | `http://openfga:8080` | OpenFGA API URL |
-| `openfga.configFile` | `/shared/openfga-config.json` | OpenFGA 設定ファイルパス |
-| `openfgaSetup.enabled` | `true` | OpenFGA セットアップ Job/initContainer の有効化 |
-| `migration.enabled` | `true` | DB マイグレーション Job の有効化 |
-| `seed.enabled` | `false` | DB シード Job の有効化 |
-| `resources` | `{}` | CPU/memory リソース制限 |
-
 ## Unit Tests
 
 [helm-unittest](https://github.com/helm-unittest/helm-unittest) でカスタムチャートのテンプレートを検証する。
@@ -137,26 +99,9 @@ helm unittest charts/contact-api
 
 ## Coding Conventions
 
-values ファイル内の文字列値はすべてダブルクォートで囲む。
-[Helm 公式ベストプラクティス](https://helm.sh/docs/chart_best_practices/values/)に従い、
-YAML の暗黙的な型変換による事故を防止する。
-
-```yaml
-# Good
-image:
-  repository: "contact-api"
-  tag: "latest"
-  pullPolicy: "Never"
-
-# Bad
-image:
-  repository: contact-api
-  tag: latest
-  pullPolicy: Never
-```
-
-整数・ブーリアン・空オブジェクト/配列はクォートしない。
+[Helm 公式ベストプラクティス](https://helm.sh/docs/chart_best_practices/values/)に従う。
 
 ## Documentation
 
+- [Chart 設定値](docs/chart-configuration.md) - contact-api チャートの設定パラメータ
 - [API エンドポイント](docs/api-endpoints.md) - OrbStack 環境での API 操作例
