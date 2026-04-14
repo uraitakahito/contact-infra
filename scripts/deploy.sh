@@ -25,6 +25,9 @@ fi
 echo "==> Deploying to ${ENV} (namespace: ${NAMESPACE})"
 
 # 1. Namespace
+# create --dry-run=client で YAML を生成し apply に渡すことで、
+# ファイル不要かつ冪等 (既存でもエラーにならない) な作成を実現する。
+# 以下の Secret 作成でも同じパターンを使用。
 kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
 # 2. Secrets
