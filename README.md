@@ -89,31 +89,6 @@ Helmfile の `needs` と Helm hook の `hook-weight` により、以下の順序
 | 7 | OpenFGA 設定ファイル生成 | Deployment initContainer |
 | 8 | contact-api サーバー起動 | Deployment main container |
 
-## contact-api Chart Configuration
-
-`charts/contact-api/values.yaml` で設定可能な値:
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `replicaCount` | `1` | Pod レプリカ数 |
-| `image.repository` | `ghcr.io/uraitakahito/contact-api` | Docker イメージリポジトリ |
-| `image.tag` | `latest` | Docker イメージタグ |
-| `image.pullPolicy` | `IfNotPresent` | イメージ pull ポリシー |
-| `service.type` | `ClusterIP` | Service タイプ |
-| `service.port` | `80` | Service ポート |
-| `postgresql.host` | `postgresql` | PostgreSQL ホスト名 |
-| `postgresql.port` | `5432` | PostgreSQL ポート |
-| `postgresql.database` | `contact_api_dev` | データベース名 |
-| `postgresql.username` | `contact_api_dev` | データベースユーザー |
-| `postgresql.password` | `""` | データベースパスワード |
-| `postgresql.existingSecret` | `""` | 既存 Secret 名 (設定時は password より優先) |
-| `openfga.apiUrl` | `http://openfga:8080` | OpenFGA API URL |
-| `openfga.configFile` | `/shared/openfga-config.json` | OpenFGA 設定ファイルパス |
-| `openfgaSetup.enabled` | `true` | OpenFGA セットアップ Job/initContainer の有効化 |
-| `migration.enabled` | `true` | DB マイグレーション Job の有効化 |
-| `seed.enabled` | `false` | DB シード Job の有効化 |
-| `resources` | `{}` | CPU/memory リソース制限 |
-
 ## Unit Tests
 
 [helm-unittest](https://github.com/helm-unittest/helm-unittest) でカスタムチャートのテンプレートを検証する。
@@ -146,4 +121,5 @@ image:
 
 ## Documentation
 
+- [Chart 設定値](docs/chart-configuration.md) - contact-api チャートの設定パラメータ
 - [API エンドポイント](docs/api-endpoints.md) - OrbStack 環境での API 操作例
