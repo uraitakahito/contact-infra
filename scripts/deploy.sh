@@ -25,14 +25,20 @@ fi
 echo "==> Deploying to ${ENV} (namespace: ${NAMESPACE})"
 
 # 1. Namespace
+# create --dry-run=client で YAML を生成し apply に渡すことで、
+# ファイル不要かつ冪等 (既存でもエラーにならない) な作成を実現する。
+# 以下の Secret 作成でも同じパターンを使用。
 kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
 # 2. Secrets
 # パスワード等の機密情報は Secret に格納する (ConfigMap は平文で誰でも読めるため)
+# bitnami/postgresql が 1 つの Secret から両キーを参照するため Secret を分割できない
+#   postgres-password:    postgres スーパーユーザー (initdb で OpenFGA 用 DB・ユーザー作成に使用)
+#   contact-api-{dev,prod}-password: contact-api 用の一般ユーザー (通常の DB 操作に使用)
 kubectl create secret generic postgresql-credentials \
   -n "${NAMESPACE}" \
   --from-literal=postgres-password="${POSTGRES_PASSWORD}" \
-  --from-literal=contact-api-password="${CONTACT_API_PASSWORD}" \
+  --from-literal=contact-api-"${ENV}"-password="${CONTACT_API_PASSWORD}" \
   --dry-run=client -o yaml | kubectl apply -f -
 
 kubectl create secret generic openfga-db-credentials \
