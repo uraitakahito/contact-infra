@@ -29,69 +29,47 @@ helm plugin install --verify=false https://github.com/helm-unittest/helm-unittes
 
 ## デプロイ手順
 
-devの場合の例:
+### dev
 
 ```bash
-NAMESPACE='contact'
+./scripts/deploy.sh dev
+```
 
-# 1. Namespace 作成
-kubectl create namespace "${NAMESPACE}"
+dev 環境ではデフォルトのパスワードが使用される。カスタマイズする場合:
 
-# 2. Secret 作成
-# パスワード等の機密情報は ConfigMap ではなく Secret に格納する。
-# ConfigMap は平文で保存され kubectl get configmap -o yaml で誰でも読めるため。
-POSTGRES_PASSWORD='dev-postgres-password'
-CONTACT_API_PASSWORD='dev-contact-api-password'
-OPENFGA_PASSWORD='dev-openfga-password'
+```bash
+POSTGRES_PASSWORD='xxx' CONTACT_API_PASSWORD='xxx' OPENFGA_PASSWORD='xxx' \
+  ./scripts/deploy.sh dev
+```
 
-kubectl create secret generic postgresql-credentials \
-  -n "${NAMESPACE}" \
-  --from-literal=postgres-password="${POSTGRES_PASSWORD}" \
-  --from-literal=contact-api-password="${CONTACT_API_PASSWORD}"
+### prod
 
-kubectl create secret generic openfga-db-credentials \
-  -n "${NAMESPACE}" \
-  --from-literal=OPENFGA_DB_PASSWORD="${OPENFGA_PASSWORD}"
+```bash
+POSTGRES_PASSWORD='...' CONTACT_API_PASSWORD='...' OPENFGA_PASSWORD='...' \
+  ./scripts/deploy.sh prod
+```
 
-kubectl create secret generic openfga-datastore-credentials \
-  -n "${NAMESPACE}" \
-  --from-literal=uri="postgres://openfga:${OPENFGA_PASSWORD}@postgresql:5432/openfga?sslmode=disable"
+### 確認
 
-kubectl create secret generic contact-api-db-credentials \
-  -n "${NAMESPACE}" \
-  --from-literal=CONTACT_API_DB_PASSWORD="${CONTACT_API_PASSWORD}"
-
-# 3. デプロイ
-helmfile -e dev sync
-
-# 4. 確認
-kubectl get pods -n "${NAMESPACE}"
-export API_URL="http://$(kubectl get svc contact-api -n "${NAMESPACE}" -o jsonpath='{.spec.clusterIP}')"
+```bash
+kubectl get pods -n contact
+export API_URL="http://$(kubectl get svc contact-api -n contact -o jsonpath='{.spec.clusterIP}')"
 curl -s "$API_URL/health/ready" | jq
+```
 
-# マニフェストをレンダリングして確認 (dry-run)
-helmfile -e dev template
+### 便利コマンド
 
-# 依存関係の DAG を確認
-helmfile -e dev show-dag
-
-# デプロイ済みとの差分を確認
-helmfile -e dev diff
+```bash
+helmfile -e dev template    # マニフェストをレンダリング (dry-run)
+helmfile -e dev show-dag    # 依存関係の DAG を確認
+helmfile -e dev diff        # デプロイ済みとの差分を確認
 ```
 
 ## 削除手順
 
 ```bash
-NAMESPACE='contact'
-helmfile -e dev destroy --args --no-hooks
-kubectl delete pvc --all -n "${NAMESPACE}"
-kubectl delete secret --all -n "${NAMESPACE}"
+./scripts/destroy.sh dev
 ```
-
-> **Note:** `--args --no-hooks` は、サードパーティチャート (OpenFGA) の hook Job が
-> uninstall 時に ServiceAccount 削除済みの状態で再実行されハングする問題を回避するために必要。
-> また `helm uninstall` は PVC や Secret を削除しないため、クリーンな再デプロイには
-> `kubectl delete pvc` と `kubectl delete secret` で明示的に削除する必要がある。
 
 ## Startup Sequence
 
