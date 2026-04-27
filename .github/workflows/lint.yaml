@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: helmfile/helmfile-action@8676eae58f17e6232c519147a0729f5f3d67a8a0 # v2.4.2
+      - uses: helmfile/helmfile-action@02671705b1dda1dc4b0a4ddd4f9f1ea8f4568c6f # v2.4.3
         with:
           helmfile-args: lint -e dev
 
